@@ -6,8 +6,8 @@ let
 in
 rec {
   # Build a NixOS system configuration.
-  # Args: { system, hostModule }
-  mkNixosHost = { system, hostModule }:
+  # Args: { system, hostModule, wsl? }
+  mkNixosHost = { system, hostModule, wsl ? false }:
     nixosSystem {
       inherit system;
       specialArgs = { inherit inputs; };
@@ -23,6 +23,9 @@ rec {
           home-manager.useUserPackages = true;
           home-manager.sharedModules = [ ../modules/home ];
         }
+
+        # WSL support
+      ] ++ (if wsl then [ inputs.nixos-wsl.nixosModules.default ] else []) ++ [
 
         # Host-specific config
         hostModule
