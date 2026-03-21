@@ -8,7 +8,7 @@ in
     enable = lib.mkEnableOption "editor configuration";
 
     default = lib.mkOption {
-      type = lib.types.enum [ "hx" "nvim" "vim" "nano" "emacs" ];
+      type = lib.types.enum [ "hx" "vim" "nano" "emacs" ];
       default = "hx";
       description = "Default editor (sets EDITOR and VISUAL env vars).";
     };
@@ -18,19 +18,6 @@ in
         type = lib.types.bool;
         default = true;
         description = "Install and configure helix.";
-      };
-    };
-
-    neovim = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Install and configure neovim.";
-      };
-      defaultEditor = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Set neovim as the default editor.";
       };
     };
   };
@@ -45,14 +32,6 @@ in
     (lib.mkIf cfg.helix.enable {
       programs.helix = {
         enable = true;
-      };
-    })
-    (lib.mkIf cfg.neovim.enable {
-      programs.neovim = {
-        enable = true;
-        defaultEditor = cfg.neovim.defaultEditor;
-        viAlias = true;
-        vimAlias = true;
       };
     })
   ]);
