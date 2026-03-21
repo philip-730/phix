@@ -43,7 +43,7 @@ hosts/          per-machine entry points
 modules/
   common/       shared across all systems (nix daemon, gc)
   home/         home-manager modules (shell, editor, packages, git)
-  nixos/        NixOS-specific (networking)
+  nixos/        NixOS-specific (empty, no shared config yet)
   darwin/       macOS-specific (system defaults)
 users/          per-user identity and preferences
 lib/            helpers for building host configurations
