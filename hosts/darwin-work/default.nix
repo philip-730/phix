@@ -23,17 +23,6 @@
     };
   };
 
-  phix.homebrew = {
-    enable = true;
-    casks = [
-      # GUI apps not available in nixpkgs go here
-      # e.g. "1password" "slack" "zoom"
-    ];
-    brews = [
-      # Homebrew formulae if needed
-    ];
-  };
-
   # ── System user ──────────────────────────────────────────────────────────────
   users.users.philipamendolia = {
     home = "/Users/philipamendolia";
