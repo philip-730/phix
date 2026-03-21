@@ -31,7 +31,7 @@
 
   phix.editor = {
     enable = true;
-    default = "nvim";
-    neovim.enable = true;
+    default = "hx";
+    helix.enable = true;
   };
 }
