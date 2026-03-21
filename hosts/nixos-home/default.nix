@@ -1,7 +1,9 @@
 { pkgs, ... }: {
-  imports = [
-    ./hardware-configuration.nix
-  ];
+  # ── WSL ──────────────────────────────────────────────────────────────────────
+  wsl = {
+    enable = true;
+    defaultUser = "philip";
+  };
 
   # ── System identity ──────────────────────────────────────────────────────────
   networking.hostName = "nixos-home";
@@ -12,16 +14,11 @@
   users.users.philip = {
     isNormalUser = true;
     shell = pkgs.zsh;
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "wheel" ];
   };
 
   # ── Modules ──────────────────────────────────────────────────────────────────
   phix.nix.enable = true;
-  phix.networking.enable = true;
-  phix.desktop = {
-    enable = true;
-    compositor = "hyprland"; # change to "gnome", "plasma", or "none"
-  };
 
   # ── home-manager ─────────────────────────────────────────────────────────────
   home-manager.users.philip = import ../../users/phil-personal.nix;
