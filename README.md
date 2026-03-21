@@ -21,7 +21,7 @@ sudo nixos-rebuild switch --flake .#nixos-home
 
 **macOS:**
 ```bash
-darwin-rebuild switch --flake .#darwin-work
+nix run nix-darwin -- switch --flake .#darwin-work
 ```
 
 ### Development shell
