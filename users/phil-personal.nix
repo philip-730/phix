@@ -34,4 +34,8 @@
     default = "hx";
     helix.enable = true;
   };
+
+  phix.wezterm = {
+    enable = true;
+  };
 }
