@@ -28,6 +28,10 @@
       grep = "rg";
       top = "htop";
     };
+    starship.settings = {
+      gcloud.disabled = true;
+      username.show_always = true;
+    };
   };
 
   phix.packages = {
@@ -48,5 +52,9 @@
 
   phix.wezterm = {
     enable = true;
+    opacity = 0.6;
+    extraConfig = ''
+      config.front_end = "WebGpu"
+    '';
   };
 }
