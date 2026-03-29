@@ -5,8 +5,17 @@
 
   phix.git = {
     enable = true;
-    userName = "Philip Amendolia";
-    userEmail = "philip@example.com"; # replace with your actual email
+    settings = {
+      user.Name = "philip-730";
+      user.Email = "philip.amendolia@gmail.com";
+      init.defaultBranch = "main";
+      core.editor = "hx --wait";
+    };
+    signing = {
+      format = "ssh";
+      key = "~/.ssh/id_ed25519.pub";
+      signByDefault = true;
+    };
   };
 
   phix.zsh = {
@@ -26,6 +35,8 @@
     core = true;
     extra = [
       # Personal packages beyond the core set
+      pkgs.google-cloud-sdk
+      pkgs.claude-code
     ];
   };
 

@@ -32,6 +32,69 @@ in
     (lib.mkIf cfg.helix.enable {
       programs.helix = {
         enable = true;
+        settings = {
+          theme = "github_dark_tritanopia";
+          editor = {
+            true-color = true;
+            line-number = "absolute";
+            mouse = false;
+            cursorline = true;
+            color-modes = true;
+            idle-timeout = 50;
+            cursor-shape = {
+              insert = "bar";
+              normal = "block";
+              select = "underline";
+            };
+            soft-wrap = {
+              enable = true;
+              wrap-indicator = "↩ ";
+            };
+            lsp = {
+              display-inlay-hints = true;
+              display-messages = true;
+            };
+          };
+        };
+        languages = {
+          language-server.ruff = {
+            command = "ruff";
+            args = [ "server" ];
+          };
+          language-server.terraform-ls = {
+            command = "terraform-ls";
+            args = [ "serve" ];
+          };
+          language-server.typescript-language-server = {
+            command = "typescript-language-server";
+            args = [ "--stdio" ];
+          };
+          language = [
+            {
+              name = "python";
+              language-servers = [ "ruff" "pyright" ];
+            }
+            {
+              name = "nix";
+              formatter = { command = "nixpkgs-fmt"; };
+            }
+            {
+              name = "javascript";
+              file-types = [ "js" "mjs" "cjs" ];
+              language-servers = [ "typescript-language-server" ];
+            }
+            {
+              name = "hcl";
+              language-servers = [ "terraform-ls" ];
+              language-id = "terraform-vars";
+            }
+            {
+              name = "tfvars";
+              language-servers = [ "terraform-ls" ];
+              language-id = "terraform-vars";
+            }
+          ];
+        };
       };
     })
   ]);

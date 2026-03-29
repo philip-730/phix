@@ -15,7 +15,7 @@ in
 
     extra = lib.mkOption {
       type = lib.types.listOf lib.types.package;
-      default = [];
+      default = [ ];
       description = "Additional packages to install for this user.";
     };
   };
@@ -34,9 +34,16 @@ in
       pkgs.tree
       pkgs.unzip
       pkgs.zip
-      pkgs.gh          # GitHub CLI
-      pkgs.just        # command runner
-      pkgs.hyperfine   # benchmarking
+      pkgs.gh # GitHub CLI
+      pkgs.just # command runner
+      pkgs.hyperfine # benchmarking
+      pkgs.nil
+      pkgs.nixpkgs-fmt
+      pkgs.ruff
+      pkgs.pyright
+      pkgs.terraform-ls
+      pkgs.vscode-langservers-extracted
+      pkgs.typescript-language-server
     ] ++ cfg.extra;
   };
 }
