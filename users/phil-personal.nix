@@ -59,8 +59,5 @@
   phix.wezterm = {
     enable = true;
     opacity = 0.6;
-    extraConfig = ''
-      config.front_end = "WebGpu"
-    '';
   };
 }
