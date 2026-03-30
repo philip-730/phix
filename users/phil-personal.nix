@@ -35,6 +35,7 @@
     };
     starship.settings = {
       gcloud.disabled = true;
+      username.show_always = true;
       character = {
         success_symbol = "[❯](bold green)";
         error_symbol = "[❯](bold red)";
