@@ -35,7 +35,10 @@
     };
     starship.settings = {
       gcloud.disabled = true;
-      username.show_always = true;
+      username = {
+        show_always = true;
+        style_user = "bold rosewater";
+      };
       directory.style = "bold peach";
       git_branch.style = "bold mauve";
       git_status.style = "yellow";
