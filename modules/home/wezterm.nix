@@ -2,6 +2,23 @@
 
 let
   cfg = config.phix.wezterm;
+  luaConfig = ''
+    local config = wezterm.config_builder()
+
+    config.font = wezterm.font("${cfg.font}")
+    config.font_size = ${toString cfg.fontSize}
+    config.window_background_opacity = ${toString cfg.opacity}
+    config.window_padding = { left = 8, right = 8, top = 8, bottom = 8 }
+    config.scrollback_lines = 10000
+    config.audible_bell = "Disabled"
+    config.window_decorations = "RESIZE"
+    config.inactive_pane_hsb = { brightness = 0.7, saturation = 0.9, hue = 1.0 }
+
+    ${cfg.extraConfig}
+
+    return config
+  '';
+  luaConfigFile = pkgs.writeText "wezterm.lua" luaConfig;
 in
 {
   options.phix.wezterm = {
@@ -30,37 +47,36 @@ in
       default = "";
       description = "Extra Lua config appended to the WezTerm configuration.";
     };
+
+    stableConfigPath = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "If set, copies the generated config as a real file (not symlink) to this path. Useful for pointing WEZTERM_CONFIG_FILE at a stable location accessible from Windows.";
+    };
   };
 
-  config = lib.mkIf cfg.enable {
-    xdg.enable = true;
+  config = lib.mkIf cfg.enable (lib.mkMerge [
+    {
+      xdg.enable = true;
 
-    programs.wezterm = {
-      enable = true;
-      extraConfig = ''
-        local config = wezterm.config_builder()
+      programs.wezterm = {
+        enable = true;
+        extraConfig = luaConfig;
+      };
 
-        config.font = wezterm.font("${cfg.font}")
-        config.font_size = ${toString cfg.fontSize}
-        config.window_background_opacity = ${toString cfg.opacity}
-        config.window_padding = { left = 8, right = 8, top = 8, bottom = 8 }
-        config.scrollback_lines = 10000
-        config.audible_bell = "Disabled"
-        config.window_decorations = "RESIZE"
-        config.inactive_pane_hsb = { brightness = 0.7, saturation = 0.9, hue = 1.0 }
+      xdg.desktopEntries.wezterm = {
+        name = "WezTerm";
+        exec = "wezterm start";
+        icon = "org.wezfurlong.wezterm";
+        comment = "WezTerm terminal emulator";
+        categories = [ "System" "TerminalEmulator" ];
+      };
+    }
 
-        ${cfg.extraConfig}
-
-        return config
+    (lib.mkIf (cfg.stableConfigPath != "") {
+      home.activation.weztermStableConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        run install -Dm644 ${luaConfigFile} "${cfg.stableConfigPath}"
       '';
-    };
-
-    xdg.desktopEntries.wezterm = {
-      name = "WezTerm";
-      exec = "wezterm start";
-      icon = "org.wezfurlong.wezterm";
-      comment = "WezTerm terminal emulator";
-      categories = [ "System" "TerminalEmulator" ];
-    };
-  };
+    })
+  ]);
 }
