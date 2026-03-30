@@ -60,5 +60,13 @@ in
         return config
       '';
     };
+
+    xdg.desktopEntries.wezterm = {
+      name = "WezTerm";
+      exec = "wezterm start";
+      icon = "wezterm";
+      comment = "WezTerm terminal emulator";
+      categories = [ "System" "TerminalEmulator" ];
+    };
   };
 }
