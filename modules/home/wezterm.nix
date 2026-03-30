@@ -58,7 +58,7 @@ in
     xdg.desktopEntries.wezterm = {
       name = "WezTerm";
       exec = "wezterm start";
-      icon = "wezterm";
+      icon = "org.wezfurlong.wezterm";
       comment = "WezTerm terminal emulator";
       categories = [ "System" "TerminalEmulator" ];
     };
