@@ -36,6 +36,15 @@
     starship.settings = {
       gcloud.disabled = true;
       username.show_always = true;
+      directory.style = "bold peach";
+      git_branch.style = "bold mauve";
+      git_status.style = "yellow";
+      nix_shell.style = "bold sapphire";
+      cmd_duration.style = "bold yellow";
+      nodejs.style = "bold green";
+      python.style = "bold green";
+      rust.style = "bold green";
+      golang.style = "bold green";
     };
   };
 
