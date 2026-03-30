@@ -3,6 +3,7 @@
   wsl = {
     enable = true;
     defaultUser = "philip";
+    startMenuLaunchers = true;
   };
 
   # ── System identity ──────────────────────────────────────────────────────────
