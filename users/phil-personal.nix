@@ -141,5 +141,6 @@
   phix.wezterm = {
     enable = true;
     opacity = 0.8;
+    stableConfigPath = "/home/philip/.config/wezterm-stable.lua";
   };
 }
