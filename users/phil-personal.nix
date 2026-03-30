@@ -34,17 +34,78 @@
       top = "htop";
     };
     starship.settings = {
+      format = "$username$directory$git_branch$git_status$nodejs$python$rust$golang$cmd_duration$line_break$character";
+
       gcloud.disabled = true;
-      username.show_always = true;
-      character = {
-        success_symbol = "[[󰄛](green) ❯](peach)";
-        error_symbol = "[[󰄛](red) ❯](peach)";
-        vimcmd_symbol = "[󰄛 ❮](subtext1)";
+
+      username = {
+        show_always = true;
+        style_user = "bold rosewater";
+        style_root = "bold red";
+        format = "[$user]($style) in ";
       };
-      git_branch.style = "bold mauve";
+
       directory = {
-        truncation_length = 4;
-        style = "bold lavender";
+        style = "bold peach";
+        format = "[$path]($style) ";
+        truncation_length = 3;
+        truncation_symbol = "…/";
+        substitutions = {
+          "Documents" = "󰈙 ";
+          "Downloads" = " ";
+          "Music" = "󰝚 ";
+          "Pictures" = " ";
+        };
+      };
+
+      git_branch = {
+        symbol = "";
+        style = "bold mauve";
+        format = "on [$symbol $branch]($style) ";
+      };
+
+      git_status = {
+        style = "yellow";
+        format = "[$all_status$ahead_behind]($style) ";
+      };
+
+      nodejs = {
+        symbol = "";
+        style = "bold green";
+        format = "[$symbol($version )]($style)";
+      };
+
+      python = {
+        symbol = "";
+        style = "bold green";
+        format = "[$symbol($version )(\\($virtualenv\\) )]($style)";
+      };
+
+      rust = {
+        symbol = "";
+        style = "bold green";
+        format = "[$symbol($version )]($style)";
+      };
+
+      golang = {
+        symbol = "";
+        style = "bold green";
+        format = "[$symbol($version )]($style)";
+      };
+
+      cmd_duration = {
+        style = "bold yellow";
+        format = "took [$duration]($style) ";
+        min_time = 2000;
+      };
+
+      character = {
+        success_symbol = "[❯](bold green)";
+        error_symbol = "[❯](bold red)";
+        vimcmd_symbol = "[❮](bold green)";
+        vimcmd_replace_one_symbol = "[❮](bold lavender)";
+        vimcmd_replace_symbol = "[❮](bold lavender)";
+        vimcmd_visual_symbol = "[❮](bold yellow)";
       };
     };
   };
