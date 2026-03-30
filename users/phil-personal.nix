@@ -63,14 +63,16 @@
     opacity = 0.8;
     stableConfigPath = "/home/philip/.config/wezterm-stable.lua";
     extraConfig = ''
-      config.wsl_domains = {
-        {
-          name = "WSL:NixOS",
-          distribution = "NixOS",
-          default_cwd = "/home/philip",
-        },
-      }
-      config.default_domain = "WSL:NixOS"
+      if string.find(wezterm.target_triple, "windows") then
+        config.wsl_domains = {
+          {
+            name = "WSL:NixOS",
+            distribution = "NixOS",
+            default_cwd = "/home/philip",
+          },
+        }
+        config.default_domain = "WSL:NixOS"
+      end
     '';
   };
 }
