@@ -33,7 +33,6 @@ in
       programs.helix = {
         enable = true;
         settings = {
-          theme = "github_dark_tritanopia";
           editor = {
             true-color = true;
             line-number = "absolute";
