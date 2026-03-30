@@ -33,6 +33,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    xdg.enable = true;
+
     programs.wezterm = {
       enable = true;
       extraConfig = ''
