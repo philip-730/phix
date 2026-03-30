@@ -19,12 +19,6 @@ in
       description = "Font size in points.";
     };
 
-    colorScheme = lib.mkOption {
-      type = lib.types.str;
-      default = "Tokyo Night";
-      description = "WezTerm color scheme name.";
-    };
-
     opacity = lib.mkOption {
       type = lib.types.float;
       default = 1.0;
@@ -44,14 +38,14 @@ in
       extraConfig = ''
         local config = wezterm.config_builder()
 
-        config.enable_tab_bar = false
         config.font = wezterm.font("${cfg.font}")
         config.font_size = ${toString cfg.fontSize}
         config.window_background_opacity = ${toString cfg.opacity}
         config.window_padding = { left = 8, right = 8, top = 8, bottom = 8 }
-        config.cursor_blink_rate = 0
         config.scrollback_lines = 10000
         config.audible_bell = "Disabled"
+        config.window_decorations = "RESIZE"
+        config.inactive_pane_hsb = { brightness = 0.7, saturation = 0.9, hue = 1.0 }
 
         ${cfg.extraConfig}
 
