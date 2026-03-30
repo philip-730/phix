@@ -3,6 +3,11 @@
 { pkgs, ... }: {
   home.stateVersion = "24.11";
 
+  catppuccin = {
+    enable = true;
+    flavor = "mocha";
+  };
+
   phix.git = {
     enable = true;
     settings = {

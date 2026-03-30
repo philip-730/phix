@@ -49,7 +49,6 @@ in
         config.enable_tab_bar = false
         config.font = wezterm.font("${cfg.font}")
         config.font_size = ${toString cfg.fontSize}
-        config.color_scheme = "${cfg.colorScheme}"
         config.window_background_opacity = ${toString cfg.opacity}
         config.window_padding = { left = 8, right = 8, top = 8, bottom = 8 }
         config.cursor_blink_rate = 0

@@ -21,7 +21,10 @@ rec {
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.sharedModules = [ ../modules/home ];
+          home-manager.sharedModules = [
+            ../modules/home
+            inputs.catppuccin.homeManagerModules.catppuccin
+          ];
         }
 
         # WSL support
@@ -48,7 +51,10 @@ rec {
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.sharedModules = [ ../modules/home ];
+          home-manager.sharedModules = [
+            ../modules/home
+            inputs.catppuccin.homeManagerModules.catppuccin
+          ];
         }
 
         # Host-specific config
