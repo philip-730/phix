@@ -34,7 +34,7 @@
       top = "htop";
     };
     starship.settings = {
-      format = "$username$directory$git_branch$git_status$nodejs$python$rust$golang$cmd_duration$line_break$character";
+      format = "$username$directory$git_branch$git_status$nodejs$python$rust$golang$nix_shell$cmd_duration$line_break$character";
 
       gcloud.disabled = true;
 
@@ -91,6 +91,12 @@
         symbol = "";
         style = "bold green";
         format = "[$symbol($version )]($style)";
+      };
+
+      nix_shell = {
+        symbol = "";
+        style = "bold sapphire";
+        format = "[$symbol$state( \\($name\\))]($style) ";
       };
 
       cmd_duration = {
