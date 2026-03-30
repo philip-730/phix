@@ -50,6 +50,12 @@
     helix.enable = true;
   };
 
+  home.pointerCursor = {
+    package = pkgs.adwaita-icon-theme;
+    name = "Adwaita";
+    size = 24;
+  };
+
   phix.wezterm = {
     enable = true;
     opacity = 0.6;
