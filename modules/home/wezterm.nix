@@ -3,6 +3,7 @@
 let
   cfg = config.phix.wezterm;
   luaConfig = ''
+    local wezterm = require 'wezterm'
     local config = wezterm.config_builder()
 
     config.font = wezterm.font("${cfg.font}")
