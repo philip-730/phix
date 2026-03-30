@@ -22,6 +22,7 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = lib.optionals cfg.core [
+      pkgs.nerd-fonts.jetbrains-mono
       pkgs.ripgrep
       pkgs.fd
       pkgs.bat

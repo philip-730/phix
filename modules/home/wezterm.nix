@@ -39,8 +39,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
-
     programs.wezterm = {
       enable = true;
       extraConfig = ''
