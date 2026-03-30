@@ -22,12 +22,12 @@ in
 
   config = lib.mkIf cfg.enable {
     programs.bat.enable = lib.mkIf cfg.core true;
+    programs.eza.enable = lib.mkIf cfg.core true;
 
     home.packages = lib.optionals cfg.core [
       pkgs.nerd-fonts.jetbrains-mono
       pkgs.ripgrep
       pkgs.fd
-      pkgs.eza
       pkgs.jq
       pkgs.yq-go
       pkgs.curl
