@@ -33,7 +33,10 @@
       grep = "rg";
       top = "htop";
     };
-    starship.settings = {};
+    starship.settings = {
+      gcloud.disabled = true;
+      username.show_always = true;
+    };
   };
 
   phix.packages = {
