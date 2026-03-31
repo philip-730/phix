@@ -6,11 +6,13 @@ let
     local wezterm = require 'wezterm'
     local config = wezterm.config_builder()
 
+    config.use_fancy_tab_bar = false
     config.font = wezterm.font("${cfg.font}")
     config.font_size = ${toString cfg.fontSize}
     config.window_background_opacity = ${toString cfg.opacity}
     config.window_padding = { left = 8, right = 8, top = 8, bottom = 8 }
     config.color_scheme = "Catppuccin Mocha"
+    config.unicode_version = 14
     config.scrollback_lines = 10000
     config.audible_bell = "Disabled"
     config.window_decorations = "RESIZE"

@@ -35,15 +35,17 @@
     };
     starship.settings = {
       gcloud.disabled = true;
+      os.disabled = false;
+      # os.symbol = "❄️";
       username = {
         show_always = true;
-        style_user = "bold rosewater";
+        style_user = "bold red";
       };
       directory.style = "bold peach";
-      git_branch.style = "bold mauve";
+      git_branch.style = "bold yellow";
       git_status.style = "yellow";
       nix_shell.style = "bold sapphire";
-      cmd_duration.style = "bold yellow";
+      cmd_duration.style = "bold lavender";
       nodejs.style = "bold green";
       python.style = "bold green";
       rust.style = "bold green";
@@ -75,7 +77,7 @@
 
   phix.wezterm = {
     enable = true;
-    opacity = 0.8;
+    opacity = 0.9;
     stableConfigPath = "/home/philip/.config/wezterm-stable.lua";
     extraConfig = ''
       if string.find(wezterm.target_triple, "windows") then

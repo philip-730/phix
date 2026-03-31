@@ -10,6 +10,8 @@
   networking.hostName = "nixos-home";
   time.timeZone = "America/New_York"; # adjust to your timezone
   i18n.defaultLocale = "en_US.UTF-8";
+  i18n.extraLocaleSettings.LC_ALL = "en_US.UTF-8";
+  # environment.variables.LC_ALL = "en_US.UTF-8";
 
   # ── System user ──────────────────────────────────────────────────────────────
   users.users.philip = {
