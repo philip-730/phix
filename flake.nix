@@ -33,6 +33,11 @@
           hostModule = ./hosts/nixos-home;
           wsl = true;
         };
+
+        mactan = lib.mkNixosHost {
+          system = "x86_64-linux";
+          hostModule = ./hosts/mactan;
+        };
       };
 
       darwinConfigurations = {

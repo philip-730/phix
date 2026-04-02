@@ -5,5 +5,6 @@
     ./packages.nix
     ./editor.nix
     ./wezterm.nix
+    ./desktop.nix
   ];
 }
