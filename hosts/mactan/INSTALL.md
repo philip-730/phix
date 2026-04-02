@@ -2,72 +2,110 @@
 
 ## Before touching the USB
 
-1. **Shrink Windows partition** — Disk Management → right click C: → Shrink Volume → shrink by 200GB
-2. **Make phix repo public** on GitHub
-3. **Flash NixOS ISO** (64-bit x86_64 graphical) to USB with Balena Etcher
+1. **Disable BitLocker** — Settings → Privacy & Security → Device Encryption → turn off (or Control Panel → BitLocker Drive Encryption → Turn off). Wait for decryption to finish, can take a while.
+2. **Shrink Windows partition** — Disk Management → right click C: → Shrink Volume → shrink by 200GB
+3. **Make phix repo public** on GitHub
+4. **Flash NixOS ISO** (64-bit x86_64 graphical) to USB with Balena Etcher
 
 ## BIOS
 
-4. Restart → mash `F2` or `Del` to get into BIOS
-5. Disable Secure Boot
-6. Set USB as first boot device
-7. Save and reboot
+5. Restart → mash `F2` or `Del` to get into BIOS
+6. Disable Secure Boot (you'll re-enable it later with lanzaboote)
+7. Set USB as first boot device
+8. Save and reboot
 
 ## In the live environment
 
-8. Open a terminal (don't use the Calamares GUI installer)
+9. Open a terminal (don't use the Calamares GUI installer)
 
-9. **Find your disk**
-   ```bash
-   lsblk
-   ```
-   Look for your NVMe drive (probably `nvme0n1`) with the unallocated free space you made.
-
-10. **Format the free space as ext4**
+10. **Find your disk**
     ```bash
-    mkfs.ext4 /dev/nvme0n1pX  # replace X with your new partition number
+    lsblk
+    ```
+    Look for your NVMe drive (probably `nvme0n1`) and confirm you can see the free space after C:.
+
+11. **Partition with cfdisk**
+    ```bash
+    cfdisk /dev/nvme0n1
+    ```
+    - Use arrow keys to select the free space
+    - Select `[ New ]` → hit enter (it will default to the full free space, that's fine)
+    - Select `[ Write ]` → type `yes` → confirm
+    - Select `[ Quit ]`
+
+    Then confirm it was created:
+    ```bash
+    lsblk
+    ```
+    Note the new partition number (e.g. `nvme0n1p6`) — you'll use it below.
+
+12. **Encrypt the partition with LUKS**
+    ```bash
+    cryptsetup luksFormat /dev/nvme0n1pX   # replace X with your new partition number
+    # type YES in caps when prompted, then set your passphrase — don't forget it
+
+    cryptsetup open /dev/nvme0n1pX nixos
+    # enter your passphrase
     ```
 
-11. **Mount partitions**
+13. **Format and mount**
     ```bash
-    mount /dev/nvme0n1pX /mnt                  # your new NixOS root partition
+    mkfs.ext4 /dev/mapper/nixos
+
+    mount /dev/mapper/nixos /mnt
     mkdir -p /mnt/boot
-    mount /dev/nvme0n1p1 /mnt/boot             # existing EFI partition (Windows made this)
+    mount /dev/nvme0n1p1 /mnt/boot    # EFI partition — partition 1, Windows made this
     ```
-    > Not sure which partition is EFI? Run `lsblk -f` and look for the FAT32 partition ~100-500MB in size.
 
-12. **Generate hardware config**
+14. **Generate hardware config**
     ```bash
     nixos-generate-config --root /mnt
     ```
 
-13. **Clone the flake**
+15. **Clone the flake**
     ```bash
     nix-shell -p git
     mkdir -p /mnt/home/philip/.config
     git clone https://github.com/philip-730/phix /mnt/home/philip/.config/phix
     ```
 
-14. **Copy hardware config into the flake**
+16. **Copy hardware config into the flake**
     ```bash
     cp /mnt/etc/nixos/hardware-configuration.nix /mnt/home/philip/.config/phix/hosts/mactan/
     ```
 
-15. **Commit and push**
+17. **Get the UUID of your encrypted partition**
+    ```bash
+    lsblk -f
+    ```
+    Find your partition (e.g. `nvme0n1p6`) and copy the UUID next to it.
+
+18. **Add LUKS to mactan config** — first check if `nixos-generate-config` already detected it:
+    ```bash
+    cat /mnt/etc/nixos/hardware-configuration.nix | grep luks
+    ```
+    If you see a `luks.devices` entry, you're done — it's already handled. If not, edit `hosts/mactan/default.nix` and add:
+    ```nix
+    boot.initrd.luks.devices."nixos" = {
+      device = "/dev/disk/by-uuid/YOUR-UUID-HERE";
+    };
+    ```
+
+19. **Commit and push**
     ```bash
     cd /mnt/home/philip/.config/phix
-    git add hosts/mactan/hardware-configuration.nix
-    git commit -m "feat(mactan): add hardware configuration"
+    git add hosts/mactan/
+    git commit -m "feat(mactan): add hardware configuration and LUKS setup"
     git push
     ```
 
-16. **Install**
+20. **Install**
     ```bash
     nixos-install --flake /mnt/home/philip/.config/phix#mactan
     ```
     It will ask you to set a root password at the end — set one and don't forget it.
 
-17. **Reboot**
+21. **Reboot**
     ```bash
     reboot
     ```
@@ -76,7 +114,8 @@
 ## First boot
 
 - GRUB will show NixOS and Windows — pick NixOS
-- Log in at the TTY with username `philip` and the password you set
+- Type your LUKS passphrase when prompted (before the login screen)
+- Log in at the TTY with username `philip` and the password you set during install
 - Type `Hyprland` to launch the desktop
 
 ## After first boot — add to mactan config
@@ -96,3 +135,58 @@ Then rebuild:
 ```bash
 sudo nixos-rebuild switch --flake ~/.config/phix#mactan
 ```
+
+---
+
+## Lanzaboote (Secure Boot) — do this after everything is working
+
+### 1. Add to flake inputs
+
+```nix
+lanzaboote = {
+  url = "github:nix-community/lanzaboote/v0.4.1";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+```
+
+And pass it through in outputs:
+```nix
+outputs = { self, nixpkgs, nix-darwin, home-manager, lanzaboote, ... }@inputs:
+```
+
+### 2. Add to mactan config
+
+```nix
+imports = [
+  ./hardware-configuration.nix
+  inputs.lanzaboote.nixosModules.lanzaboote
+];
+
+boot.loader.grub.enable = lib.mkForce false; # lanzaboote takes over boot
+boot.lanzaboote = {
+  enable = true;
+  pkiBundle = "/etc/secureboot";
+};
+```
+
+### 3. Generate and enroll keys
+
+```bash
+sudo nix run nixpkgs#sbctl -- create-keys
+sudo nixos-rebuild switch --flake ~/.config/phix#mactan
+sudo nix run nixpkgs#sbctl -- enroll-keys --microsoft
+```
+
+### 4. Enable Secure Boot in BIOS
+
+- Reboot into BIOS
+- Enable Secure Boot
+- Save and reboot
+
+### 5. Verify
+
+```bash
+sudo nix run nixpkgs#sbctl -- verify
+```
+
+All files should show as signed.
