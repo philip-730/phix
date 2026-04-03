@@ -53,11 +53,16 @@
   home-manager.users.philip = {
     imports = [ ../../users/phil-personal.nix ];
     phix.desktop.enable = true;
-    wayland.windowManager.hyprland.settings.env = [
-      "WLR_NO_HARDWARE_CURSORS,1"
-      "AQ_DRM_DEVICES,/dev/dri/card1"
-    ];
+    wayland.windowManager.hyprland.settings = {
+      env = [
+        "WLR_NO_HARDWARE_CURSORS,1"
+        "AQ_DRM_DEVICES,/dev/dri/card1"
+      ];
+      decoration.blur.enabled = false;
+    };
   };
+
+  programs.firefox.enable = true;
 
   # ── Extra ─────────────────────────────────────────────────────────────────────
   programs.hyprland.enable = true;
