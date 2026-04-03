@@ -127,8 +127,6 @@
 ## After first boot — add to mactan config
 
 ```nix
-networking.networkmanager.enable = true;
-users.users.philip.extraGroups = [ "wheel" "networkmanager" ];
 hardware.bluetooth.enable = true;
 services.pipewire = {
   enable = true;
