@@ -105,7 +105,13 @@
     ```
     It will ask you to set a root password at the end — set one and don't forget it.
 
-21. **Reboot**
+21. **Set philip's password**
+    ```bash
+    nixos-enter --root /mnt -c "passwd philip"
+    ```
+    Do this before rebooting. `nixos-install` only sets the root password — without this step `philip` has no password and you won't be able to log in at the TTY.
+
+22. **Reboot**
     ```bash
     reboot
     ```
