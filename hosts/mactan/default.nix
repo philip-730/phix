@@ -24,8 +24,10 @@
   users.users.philip = {
     isNormalUser = true;
     shell = pkgs.zsh;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "networkmanager" ];
   };
+
+  networking.networkmanager.enable = true;
 
   # ── Modules ───────────────────────────────────────────────────────────────────
   phix.nix.enable = true;
