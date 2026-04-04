@@ -32,6 +32,8 @@ in
           gaps_in = 5;
           gaps_out = 10;
           border_size = 2;
+          "col.active_border" = "$accent";
+          "col.inactive_border" = "$surface1";
         };
 
         decoration = {
@@ -106,7 +108,7 @@ in
           ", XF86KbdBrightnessDown, exec, asusctl led prev"
         ];
 
-        exec-once = [ "waybar" "swww-daemon" "swww img ~/wallpapers/wall2.png" ];
+        exec-once = [ "waybar" "swww-daemon" "swww img ~/wallpapers/wall2.png" "hypridle" ];
       };
     };
 
@@ -238,6 +240,24 @@ in
     programs.rofi = lib.mkIf (cfg.launcher == "rofi") {
       enable = true;
       package = pkgs.rofi;
+    };
+
+    programs.hyprlock.enable = true;
+    programs.btop.enable = true;
+
+    services.hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          lock_cmd = "hyprlock";
+          before_sleep_cmd = "hyprlock";
+        };
+        listener = [
+          { timeout = 300; on-timeout = "hyprlock"; }
+          { timeout = 600; on-timeout = "hyprctl dispatch dpms off"; on-resume = "hyprctl dispatch dpms on"; }
+          { timeout = 900; on-timeout = "systemctl suspend"; }
+        ];
+      };
     };
 
     home.packages = lib.optionals (cfg.launcher == "wofi") [ pkgs.wofi ]
