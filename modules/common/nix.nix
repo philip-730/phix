@@ -49,6 +49,7 @@ in
 
       gc = lib.mkIf cfg.gc.enable {
         automatic = true;
+        dates = cfg.gc.frequency;
         options = "--delete-older-than +${toString cfg.gc.keepGenerations}";
       };
     };
