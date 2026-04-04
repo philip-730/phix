@@ -4,7 +4,7 @@ let
   inherit (inputs.nixpkgs.lib) nixosSystem;
   inherit (inputs.nix-darwin.lib) darwinSystem;
 in
-rec {
+{
   # Build a NixOS system configuration.
   # Args: { system, hostModule, wsl? }
   mkNixosHost = { system, hostModule, wsl ? false }:
@@ -19,8 +19,10 @@ rec {
         # home-manager as a NixOS module
         inputs.home-manager.nixosModules.home-manager
         {
+          nixpkgs.config.allowUnfree = true;
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "bak";
           home-manager.sharedModules = [
             ../modules/home
             inputs.catppuccin.homeManagerModules.catppuccin
@@ -51,6 +53,7 @@ rec {
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "bak";
           home-manager.sharedModules = [
             ../modules/home
             inputs.catppuccin.homeManagerModules.catppuccin

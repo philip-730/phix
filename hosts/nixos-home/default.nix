@@ -27,10 +27,7 @@
   home-manager.users.philip = import ../../users/phil-personal.nix;
 
   # ── Extra Reqs = ─────────────────────────────────────────────────────────────
-  programs.zsh.enable = true;
   programs.nix-ld.enable = true;
-  nixpkgs.config.allowUnfree = true;
-  home-manager.backupFileExtension = "bak";
     
   system.stateVersion = "24.11";
 }
