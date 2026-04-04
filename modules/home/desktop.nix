@@ -110,7 +110,11 @@ in
           ", XF86KbdBrightnessDown, exec, asusctl led prev"
         ];
 
-        exec-once = [ "waybar" "swww-daemon" "swww img ~/wallpapers/wall2.png" "hypridle" ];
+        exec-once = [ "waybar" "swww-daemon" "hypridle" ]
+          ++ lib.optional (cfg.wallpaper != null)
+               "swww img ${toString cfg.wallpaper}"
+          ++ lib.optional (cfg.wallpaper == null)
+               "swww img ~/wallpapers/wall2.png";
       };
     };
 
@@ -248,7 +252,7 @@ in
       settings = {
         background = [{
           monitor = "";
-          path = "~/wallpapers/wall2.png";
+          path = if cfg.wallpaper != null then toString cfg.wallpaper else "~/wallpapers/wall2.png";
           blur_passes = 3;
           blur_size = 7;
           brightness = 0.6;
