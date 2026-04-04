@@ -1,18 +1,24 @@
 # phix
 
-Phil's Nix configs and toolset — a flake-based system configuration for NixOS-WSL and macOS (Darwin).
+Phil's Nix configs and toolset — a flake-based system configuration for NixOS (bare metal and WSL) and macOS (Darwin).
 
 ## Overview
 
 Phix manages reproducible system configurations across multiple machines using [Nix flakes](https://nixos.wiki/wiki/Flakes) and [home-manager](https://github.com/nix-community/home-manager). It provides a modular structure for shared and per-host settings covering the shell, editor, packages, git, and more.
 
 **Supported platforms:**
+- `mactan` — NixOS bare metal (x86_64-linux) — **daily driver** — ASUS laptop, AMD Phoenix, Hyprland on Wayland, LUKS encryption, dual-boot with Windows
 - `nixos-home` — NixOS-WSL (x86_64-linux)
 - `darwin-work` — macOS (aarch64-darwin)
 
 ## Usage
 
 ### Apply system configuration
+
+**NixOS bare metal (mactan):**
+```bash
+sudo nixos-rebuild switch --flake .#mactan
+```
 
 **NixOS-WSL:**
 ```bash
