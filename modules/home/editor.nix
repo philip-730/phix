@@ -75,7 +75,7 @@ in
             }
             {
               name = "nix";
-              formatter = { command = "nixpkgs-fmt"; };
+              formatter = { command = "nixfmt"; };
             }
             {
               name = "javascript";
