@@ -5,8 +5,11 @@
 
   phix.git = {
     enable = true;
-    userName = "Philip Amendolia";
-    userEmail = "philip@work.com"; # replace with your actual work email
+    settings = {
+      user.name = "Philip Amendolia";
+      user.email = "philip@work.com"; # replace with your actual work email
+      init.defaultBranch = "main";
+    };
   };
 
   phix.zsh = {
