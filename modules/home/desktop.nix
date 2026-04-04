@@ -79,7 +79,9 @@ in
           "$mod SHIFT, 3, movetoworkspace, 3"
           "$mod SHIFT, 4, movetoworkspace, 4"
           "$mod SHIFT, 5, movetoworkspace, 5"
-          "$mod, E, layoutmsg, resetlayout"
+          "$mod SHIFT, S, exec, grim -g \"$(slurp)\" - | wl-copy"
+          "$mod, S, exec, grim -g \"$(slurp)\" ~/Pictures/screenshots/$(date +%Y%m%d_%H%M%S).png"
+          "$mod SHIFT, F, exec, grim ~/Pictures/screenshots/$(date +%Y%m%d_%H%M%S).png"
         ] ++ lib.optionals (cfg.launcher == "wofi") [
           "$mod, D, exec, wofi --show drun"
         ] ++ lib.optionals (cfg.launcher == "rofi") [
@@ -231,8 +233,7 @@ in
       enable = true;
       keymap = {
         manager.prepend_keymap = [
-          { on = "d"; run = "noop"; }
-          { on = "D"; run = "noop"; }
+          { on = [ "D" ]; run = ""; }
         ];
       };
     };
@@ -242,7 +243,18 @@ in
       package = pkgs.rofi;
     };
 
-    programs.hyprlock.enable = true;
+    programs.hyprlock = {
+      enable = true;
+      settings = {
+        background = [{
+          monitor = "";
+          path = "~/wallpapers/wall2.png";
+          blur_passes = 3;
+          blur_size = 7;
+          brightness = 0.6;
+        }];
+      };
+    };
     programs.btop.enable = true;
 
     services.hypridle = {

@@ -37,7 +37,7 @@
     ```bash
     lsblk
     ```
-    Note the new partition number (e.g. `nvme0n1p6`) — you'll use it below.
+    Note the new partition number (e.g. `nvme0n1p7`) — you'll use it below.
 
 12. **Encrypt the partition with LUKS**
     ```bash
@@ -62,25 +62,32 @@
     nixos-generate-config --root /mnt
     ```
 
-15. **Clone the flake**
+15. **Create home directory with correct ownership**
+    ```bash
+    mkdir -p /mnt/home/philip
+    chown 1000:100 /mnt/home/philip
+    ```
+    This prevents home-manager from failing on first boot due to the directory being owned by root.
+
+16. **Clone the flake**
     ```bash
     nix-shell -p git
     mkdir -p /mnt/home/philip/.config
     git clone https://github.com/philip-730/phix /mnt/home/philip/.config/phix
     ```
 
-16. **Copy hardware config into the flake**
+17. **Copy hardware config into the flake**
     ```bash
     cp /mnt/etc/nixos/hardware-configuration.nix /mnt/home/philip/.config/phix/hosts/mactan/
     ```
 
-17. **Get the UUID of your encrypted partition**
+18. **Get the UUID of your encrypted partition**
     ```bash
     lsblk -f
     ```
-    Find your partition (e.g. `nvme0n1p6`) and copy the UUID next to it.
+    Find your partition (e.g. `nvme0n1p7`) and copy the UUID next to it.
 
-18. **Add LUKS to mactan config** — first check if `nixos-generate-config` already detected it:
+19. **Add LUKS to mactan config** — first check if `nixos-generate-config` already detected it:
     ```bash
     cat /mnt/etc/nixos/hardware-configuration.nix | grep luks
     ```
@@ -91,7 +98,7 @@
     };
     ```
 
-19. **Commit and push**
+20. **Commit and push**
     ```bash
     cd /mnt/home/philip/.config/phix
     git add hosts/mactan/
@@ -99,19 +106,19 @@
     git push
     ```
 
-20. **Install**
+21. **Install**
     ```bash
     nixos-install --flake /mnt/home/philip/.config/phix#mactan
     ```
     It will ask you to set a root password at the end — set one and don't forget it.
 
-21. **Set philip's password**
+22. **Set philip's password**
     ```bash
     nixos-enter --root /mnt -c "passwd philip"
     ```
     Do this before rebooting. `nixos-install` only sets the root password — without this step `philip` has no password and you won't be able to log in at the TTY.
 
-22. **Reboot**
+23. **Reboot**
     ```bash
     reboot
     ```
@@ -123,6 +130,13 @@
 - Type your LUKS passphrase when prompted (before the login screen)
 - Log in at the TTY with username `philip` and the password you set during install
 - Type `Hyprland` to launch the desktop
+
+> **Note:** Step 15 should prevent this, but if home-manager failed to create files (Hyprland won't start, home directory looks empty), the directory was likely recreated as root. Fix it:
+> ```bash
+> sudo chown -R philip:users /home/philip
+> sudo nixos-rebuild switch --flake ~/.config/phix#mactan
+> ```
+> Then try launching Hyprland again.
 
 ## After first boot — add to mactan config
 

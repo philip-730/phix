@@ -39,6 +39,7 @@ in
       pkgs.gh # GitHub CLI
       pkgs.just # command runner
       pkgs.hyperfine # benchmarking
+      pkgs.fastfetch
       pkgs.nil
       pkgs.nixpkgs-fmt
       pkgs.ruff
