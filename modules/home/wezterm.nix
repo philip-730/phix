@@ -5,7 +5,7 @@ let
   luaConfig = ''
     local wezterm = require 'wezterm'
     local config = wezterm.config_builder()
-
+    config.enable_wayland = false
     config.use_fancy_tab_bar = false
     config.font = wezterm.font("${cfg.font}")
     config.font_size = ${toString cfg.fontSize}
@@ -68,13 +68,6 @@ in
         extraConfig = luaConfig;
       };
 
-      xdg.desktopEntries.wezterm = {
-        name = "WezTerm";
-        exec = "wezterm start";
-        icon = "org.wezfurlong.wezterm";
-        comment = "WezTerm terminal emulator";
-        categories = [ "System" "TerminalEmulator" ];
-      };
     }
 
     (lib.mkIf (cfg.stableConfigPath != "") {

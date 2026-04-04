@@ -8,7 +8,7 @@ in
     enable = lib.mkEnableOption "desktop environment (Hyprland, Waybar, wofi, yazi)";
 
     launcher = lib.mkOption {
-      type = lib.types.enum [ "wofi" "rofi" ];
+      type = lib.types.enum [ "wofi" "rofi" ]; # rofi includes wayland support
       default = "wofi";
       description = "Application launcher to use.";
     };
@@ -36,11 +36,11 @@ in
 
         decoration = {
           rounding = 10;
-          blur = {
-            enabled = true;
-            size = 3;
-            passes = 1;
-          };
+          # blur = {
+          #   enabled = true;
+          #   size = 3;
+          #   passes = 1;
+          # };
         };
 
         animations = {
@@ -68,15 +68,32 @@ in
           "$mod, 3, workspace, 3"
           "$mod, 4, workspace, 4"
           "$mod, 5, workspace, 5"
+          "$mod SHIFT, H, movewindow, l"
+          "$mod SHIFT, L, movewindow, r"
+          "$mod SHIFT, K, movewindow, u"
+          "$mod SHIFT, J, movewindow, d"
           "$mod SHIFT, 1, movetoworkspace, 1"
           "$mod SHIFT, 2, movetoworkspace, 2"
           "$mod SHIFT, 3, movetoworkspace, 3"
           "$mod SHIFT, 4, movetoworkspace, 4"
           "$mod SHIFT, 5, movetoworkspace, 5"
+          "$mod, E, layoutmsg, resetlayout"
         ] ++ lib.optionals (cfg.launcher == "wofi") [
           "$mod, D, exec, wofi --show drun"
         ] ++ lib.optionals (cfg.launcher == "rofi") [
           "$mod, D, exec, rofi -show drun"
+        ];
+
+        binde = [
+          "$mod ALT, H, resizeactive, -20 0"
+          "$mod ALT, L, resizeactive, 20 0"
+          "$mod ALT, K, resizeactive, 0 -20"
+          "$mod ALT, J, resizeactive, 0 20"
+        ];
+
+        bindm = [
+          "$mod, mouse:272, movewindow"
+          "$mod, mouse:273, resizewindow"
         ];
 
         bindel = [
@@ -85,9 +102,11 @@ in
           ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
           ", XF86MonBrightnessUp, exec, brightnessctl set 5%+"
           ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
+          ", XF86KbdBrightnessUp, exec, asusctl led next"
+          ", XF86KbdBrightnessDown, exec, asusctl led prev"
         ];
 
-        exec-once = [ "waybar" ];
+        exec-once = [ "waybar" "swww-daemon" "swww img ~/wallpapers/wall2.png" ];
       };
     };
 
@@ -96,27 +115,132 @@ in
       settings = [{
         layer = "top";
         position = "top";
+        spacing = 4;
         modules-left = [ "hyprland/workspaces" ];
         modules-center = [ "clock" ];
-        modules-right = [ "pulseaudio" "battery" "network" "tray" ];
-        clock.format = "{:%a %b %d  %H:%M}";
+        modules-right = [ "pulseaudio" "bluetooth" "battery" "network" "tray" ];
+
+        "hyprland/workspaces" = {
+          format = "{id}";
+          on-click = "activate";
+        };
+
+        clock = {
+          format = "󰃰 {:%a %b %d  %H:%M}";
+          tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+        };
+
         battery = {
-          format = "{capacity}% {icon}";
-          format-icons = [ "" "" "" "" "" ];
+          states = { warning = 30; critical = 15; };
+          format = "{icon} {capacity}%";
+          format-charging = "󰂄 {capacity}%";
+          format-icons = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
         };
+
         network = {
-          format-wifi = "{essid} ";
-          format-ethernet = "eth ";
-          format-disconnected = "disconnected";
+          format-wifi = "󰖩 {essid}";
+          format-ethernet = "󰈀 eth";
+          format-disconnected = "󰖪 disconnected";
+          tooltip-format-wifi = "{signalStrength}% {frequency}MHz";
         };
-        pulseaudio.format = "{volume}% {icon}";
+
+        pulseaudio = {
+          format = "{icon} {volume}%";
+          format-muted = "󰖁 muted";
+          format-icons = { default = [ "󰕿" "󰖀" "󰕾" ]; };
+          on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+        };
+
+        bluetooth = {
+          format = "󰂯 {status}";
+          format-connected = "󰂱 {device_alias}";
+          format-connected-battery = "󰂱 {device_alias} {device_battery_percentage}%";
+          on-click = "blueman-manager";
+        };
+
+        tray.spacing = 8;
       }];
+
+      style = ''
+        * {
+          border: none;
+          border-radius: 0;
+          font-family: "JetBrainsMono Nerd Font", monospace;
+          font-size: 13px;
+          min-height: 0;
+        }
+
+        window#waybar {
+          background: @base;
+          color: @text;
+          border-bottom: 2px solid @surface0;
+        }
+
+        #workspaces button {
+          padding: 0 10px;
+          color: @overlay0;
+          background: transparent;
+          border-radius: 6px;
+          margin: 4px 2px;
+        }
+
+        #workspaces button.active {
+          color: @base;
+          background: @mauve;
+        }
+
+        #workspaces button:hover {
+          color: @text;
+          background: @surface0;
+        }
+
+        #workspaces,
+        #clock,
+        #battery,
+        #network,
+        #pulseaudio,
+        #bluetooth,
+        #tray {
+          padding: 0 12px;
+        }
+
+        #clock            { color: @blue; }
+        #battery          { color: @green; }
+        #battery.warning  { color: @yellow; }
+        #battery.critical { color: @red; }
+        #network          { color: @sky; }
+        #pulseaudio       { color: @pink; }
+        #pulseaudio.muted { color: @overlay0; }
+        #bluetooth        { color: @blue; }
+        #bluetooth.connected { color: @green; }
+        #tray             { color: @text; }
+      '';
     };
 
-    programs.yazi.enable = true;
+    gtk = {
+      enable = true;
+      gtk3.extraConfig.gtk-application-prefer-dark-theme = true;
+      gtk4.extraConfig.gtk-application-prefer-dark-theme = true;
+    };
+
+    dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+
+    programs.yazi = {
+      enable = true;
+      keymap = {
+        manager.prepend_keymap = [
+          { on = "d"; run = "noop"; }
+          { on = "D"; run = "noop"; }
+        ];
+      };
+    };
+
+    programs.rofi = lib.mkIf (cfg.launcher == "rofi") {
+      enable = true;
+      package = pkgs.rofi;
+    };
 
     home.packages = lib.optionals (cfg.launcher == "wofi") [ pkgs.wofi ]
-      ++ lib.optionals (cfg.launcher == "rofi") [ pkgs.rofi-wayland ]
       ++ [
         pkgs.brightnessctl
         pkgs.swww           # wallpaper daemon
@@ -124,6 +248,7 @@ in
         pkgs.grim           # screenshots
         pkgs.slurp          # region select for screenshots
         pkgs.wl-clipboard   # clipboard
+        pkgs.blueman        # bluetooth manager
       ];
   };
 }

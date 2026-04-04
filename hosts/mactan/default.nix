@@ -34,7 +34,12 @@
 
   # ── Hardware ──────────────────────────────────────────────────────────────────
   hardware.graphics.enable = true;
+  services.asusd.enable = true;
+
   hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  hardware.bluetooth.settings.General.Experimental = true;
+  services.blueman.enable = true;
 
   # ── Audio ─────────────────────────────────────────────────────────────────────
   services.pipewire = {
@@ -53,16 +58,55 @@
   home-manager.users.philip = {
     imports = [ ../../users/phil-personal.nix ];
     phix.desktop.enable = true;
+    phix.desktop.launcher = "rofi";
+
+    programs.firefox = {
+      enable = true;
+      profiles.default = {
+        isDefault = true;
+        extensions.force = true;
+      };
+    };
     wayland.windowManager.hyprland.settings = {
       env = [
+        # TODO: verify these are actually needed for AMD Phoenix
+        # WLR_NO_HARDWARE_CURSORS fixes cursor rendering bugs on some AMD Wayland setups
+        # AQ_DRM_DEVICES forces Hyprland to use card1 — may not be necessary
         "WLR_NO_HARDWARE_CURSORS,1"
         "AQ_DRM_DEVICES,/dev/dri/card1"
       ];
+      # TODO: verify this is actually needed — disabled due to suspected AMD rendering issues
       decoration.blur.enabled = false;
+      monitor = [
+        "HDMI-A-1,3440x1440@84.96,0x0,1"
+        "eDP-1,1920x1200@120,3440x0,1"
+      ];
+      workspace = [
+        "1, monitor:HDMI-A-1, default:true"
+        "2, monitor:HDMI-A-1"
+        "3, monitor:HDMI-A-1"
+        "4, monitor:HDMI-A-1"
+        "5, monitor:eDP-1, default:true"
+      ];
     };
   };
 
-  programs.firefox.enable = true;
+
+  # ── SSH ───────────────────────────────────────────────────────────────────
+  programs.ssh.knownHosts = {
+    "github.com-ed25519" = {
+      hostNames = [ "github.com" ];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+    };
+    "github.com-ecdsa" = {
+      hostNames = [ "github.com" ];
+      publicKey = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=";
+    };
+    "github.com-rsa" = {
+      hostNames = [ "github.com" ];
+      publicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=";
+    };
+  };
 
   # ── Extra ─────────────────────────────────────────────────────────────────────
   programs.hyprland.enable = true;
