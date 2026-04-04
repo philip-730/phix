@@ -41,7 +41,7 @@ in
       pkgs.hyperfine # benchmarking
       pkgs.fastfetch
       pkgs.nil
-      pkgs.nixpkgs-fmt
+      pkgs.nixfmt-rfc-style
       pkgs.ruff
       pkgs.pyright
       pkgs.terraform-ls
