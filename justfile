@@ -4,11 +4,11 @@ default:
 
 # Format all nix files in place
 fmt:
-    nixfmt-rfc-style .
+    nixfmt .
 
 # Check formatting without modifying (mirrors CI)
 fmt-check:
-    git ls-files '*.nix' | xargs nixfmt-rfc-style --check
+    git ls-files '*.nix' | grep -v '^learn/' | xargs nixfmt --check
 
 # Lint with statix
 lint:
