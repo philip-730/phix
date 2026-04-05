@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Check formatting
+        run: |
+          nix run nixpkgs#nixfmt-rfc-style -- --check $(git ls-files '*.nix')
+
+      - name: Lint with statix
+        run: nix run nixpkgs#statix -- check .
+
+      - name: Check for dead code with deadnix
+        run: nix run nixpkgs#deadnix -- --fail .
+
+      - name: Evaluate NixOS configs
+        run: |
+          nix eval --no-update-lock-file .#nixosConfigurations.mactan.config.system.build.toplevel.drvPath
+          nix eval --no-update-lock-file .#nixosConfigurations.nixos-home.config.system.build.toplevel.drvPath

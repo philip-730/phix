@@ -56,6 +56,7 @@
               pkgs.nil
               pkgs.nixfmt-rfc-style
               pkgs.statix
+              pkgs.deadnix
             ];
           };
         }
