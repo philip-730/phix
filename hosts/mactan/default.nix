@@ -59,6 +59,7 @@
     imports = [ ../../users/phil-personal.nix ];
     phix.desktop.enable = true;
     phix.desktop.launcher = "rofi";
+    phix.desktop.wallpaper = "~/wallpapers/wall1.jpg";
 
     programs.firefox = {
       enable = true;

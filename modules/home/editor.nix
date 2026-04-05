@@ -56,6 +56,10 @@ in
           };
         };
         languages = {
+          language-server.nil = {
+            command = "nil";
+            config.nil.nix.flake.autoArchive = true;
+          };
           language-server.ruff = {
             command = "ruff";
             args = [ "server" ];
@@ -75,6 +79,7 @@ in
             }
             {
               name = "nix";
+              language-servers = [ "nil" ];
               formatter = { command = "nixfmt"; };
             }
             {

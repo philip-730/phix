@@ -14,9 +14,9 @@ in
     };
 
     wallpaper = lib.mkOption {
-      type = lib.types.nullOr lib.types.path;
+      type = lib.types.nullOr lib.types.str;
       default = null;
-      description = "Path to wallpaper image.";
+      description = "Path to wallpaper image (e.g. ~/wallpapers/wall.png).";
     };
   };
 
