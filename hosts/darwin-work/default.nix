@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   # ── System identity ──────────────────────────────────────────────────────────
   networking.hostName = "darwin-work";
 

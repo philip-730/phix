@@ -22,7 +22,14 @@
     catppuccin.url = "github:catppuccin/nix";
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nix-darwin,
+      home-manager,
+      ...
+    }@inputs:
     let
       lib = import ./lib { inherit inputs; };
     in
@@ -48,9 +55,12 @@
       };
 
       # Dev shell for working on configs: nil (LSP), formatter, linter
-      devShells = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system:
-        let pkgs = nixpkgs.legacyPackages.${system};
-        in {
+      devShells = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
           default = pkgs.mkShell {
             packages = [
               pkgs.nil

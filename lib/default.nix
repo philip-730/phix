@@ -7,7 +7,12 @@ in
 {
   # Build a NixOS system configuration.
   # Args: { system, hostModule, wsl? }
-  mkNixosHost = { system, hostModule, wsl ? false }:
+  mkNixosHost =
+    {
+      system,
+      hostModule,
+      wsl ? false,
+    }:
     nixosSystem {
       inherit system;
       specialArgs = { inherit inputs; };
@@ -20,17 +25,21 @@ in
         inputs.home-manager.nixosModules.home-manager
         {
           nixpkgs.config.allowUnfree = true;
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "bak";
-          home-manager.sharedModules = [
-            ../modules/home
-            inputs.catppuccin.homeManagerModules.catppuccin
-          ];
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            backupFileExtension = "bak";
+            sharedModules = [
+              ../modules/home
+              inputs.catppuccin.homeManagerModules.catppuccin
+            ];
+          };
         }
 
         # WSL support
-      ] ++ (if wsl then [ inputs.nixos-wsl.nixosModules.default ] else []) ++ [
+      ]
+      ++ (if wsl then [ inputs.nixos-wsl.nixosModules.default ] else [ ])
+      ++ [
 
         # Host-specific config
         hostModule
@@ -39,7 +48,8 @@ in
 
   # Build a nix-darwin system configuration.
   # Args: { system, hostModule }
-  mkDarwinHost = { system, hostModule }:
+  mkDarwinHost =
+    { system, hostModule }:
     darwinSystem {
       inherit system;
       specialArgs = { inherit inputs; };
@@ -51,13 +61,15 @@ in
         # home-manager as a Darwin module
         inputs.home-manager.darwinModules.home-manager
         {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "bak";
-          home-manager.sharedModules = [
-            ../modules/home
-            inputs.catppuccin.homeManagerModules.catppuccin
-          ];
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            backupFileExtension = "bak";
+            sharedModules = [
+              ../modules/home
+              inputs.catppuccin.homeManagerModules.catppuccin
+            ];
+          };
         }
 
         # Host-specific config
