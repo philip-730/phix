@@ -15,7 +15,7 @@
       user.Name = "philip-730";
       user.Email = "philip.amendolia@gmail.com";
       init.defaultBranch = "main";
-      core.editor = "hx --wait";
+      core.editor = "hx";
     };
     signing = {
       format = "ssh";
