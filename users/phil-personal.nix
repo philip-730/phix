@@ -71,8 +71,8 @@
   };
 
   home.pointerCursor = {
-    package = pkgs.adwaita-icon-theme;
-    name = "Adwaita";
+    package = pkgs.catppuccin-cursors.mochaMauve;
+    name = "catppuccin-mocha-mauve-cursors";
     size = 24;
   };
 

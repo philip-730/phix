@@ -85,7 +85,7 @@ in
         ] ++ lib.optionals (cfg.launcher == "wofi") [
           "$mod, D, exec, wofi --show drun"
         ] ++ lib.optionals (cfg.launcher == "rofi") [
-          "$mod, D, exec, rofi -show drun"
+          "$mod, D, exec, rofi -show drun -show-icons"
         ];
 
         binde = [
@@ -150,6 +150,7 @@ in
           format-ethernet = "󰈀 eth";
           format-disconnected = "󰖪 disconnected";
           tooltip-format-wifi = "{signalStrength}% {frequency}MHz";
+          on-click = "nm-connection-editor";
         };
 
         pulseaudio = {
@@ -285,6 +286,7 @@ in
         pkgs.slurp          # region select for screenshots
         pkgs.wl-clipboard   # clipboard
         pkgs.blueman        # bluetooth manager
+        pkgs.networkmanagerapplet # wifi manager (tray)
       ];
   };
 }
