@@ -1,16 +1,14 @@
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, modulesPath, ... }:
 {
   # ── Disk layout (disko) ───────────────────────────────────────────────────────
   imports = [
     inputs.disko.nixosModules.disko
     ./disko.nix
+    (modulesPath + "/profiles/qemu-guest.nix")
   ];
 
   # ── Boot ──────────────────────────────────────────────────────────────────────
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
-  };
+  boot.loader.grub.enable = true;
 
   # ── System identity ───────────────────────────────────────────────────────────
   networking.hostName = "vegeta";
