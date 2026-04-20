@@ -20,6 +20,11 @@
     };
 
     catppuccin.url = "github:catppuccin/nix";
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -44,6 +49,11 @@
         mactan = lib.mkNixosHost {
           system = "x86_64-linux";
           hostModule = ./hosts/mactan;
+        };
+
+        vegeta = lib.mkNixosHost {
+          system = "x86_64-linux";
+          hostModule = ./hosts/vegeta;
         };
       };
 
