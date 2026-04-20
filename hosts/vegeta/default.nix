@@ -32,6 +32,8 @@
   # ── Modules ───────────────────────────────────────────────────────────────────
   phix.nix.enable = true;
 
+  security.sudo.wheelNeedsPassword = false;
+
   # ── Services ──────────────────────────────────────────────────────────────────
   services.openssh = {
     enable = true;
