@@ -1,8 +1,12 @@
-{ pkgs, inputs, modulesPath, ... }:
+{ config, pkgs, inputs, modulesPath, ... }:
+let
+  keys = import ../../modules/ssot/keys.nix;
+in
 {
-  # ── Disk layout (disko) ───────────────────────────────────────────────────────
+  # ── Imports ───────────────────────────────────────────────────────────────────
   imports = [
     inputs.disko.nixosModules.disko
+    inputs.agenix.nixosModules.default
     ./disko.nix
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
@@ -24,10 +28,10 @@
     isNormalUser = true;
     shell = pkgs.zsh;
     extraGroups = [ "wheel" ];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIELlZIKOjzYwlQKX1axFreOXhZQz5MuPscRi2PDba1zi philip@mactan"
-    ];
+    openssh.authorizedKeys.keys = keys.users.philip;
   };
+
+  users.users.root.openssh.authorizedKeys.keys = keys.users.philip;
 
   # ── Modules ───────────────────────────────────────────────────────────────────
   phix.nix.enable = true;
@@ -40,7 +44,23 @@
     settings.PasswordAuthentication = false;
   };
 
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+    authKeyFile = config.age.secrets.tailscale_auth.path;
+    extraUpFlags = [ "--ssh" ];
+  };
+
+  age.secrets = {
+    tailscale_auth = {
+      file = ../../secrets/tailscale_auth.age;
+    };
+    user_ssh = {
+      file = ../../secrets/user_ssh.age;
+      path = "/home/philip/.ssh/id_ed25519";
+      owner = "philip";
+      mode = "0600";
+    };
+  };
 
   # ── home-manager ──────────────────────────────────────────────────────────────
   home-manager.users.philip = {

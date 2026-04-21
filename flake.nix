@@ -25,6 +25,11 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -33,6 +38,7 @@
       nixpkgs,
       nix-darwin,
       home-manager,
+      agenix,
       ...
     }@inputs:
     let
@@ -77,6 +83,7 @@
               pkgs.nixfmt
               pkgs.statix
               pkgs.deadnix
+              agenix.packages.${system}.default
             ];
           };
         }

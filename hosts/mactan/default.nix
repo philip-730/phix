@@ -100,6 +100,19 @@
     };
   };
 
+  # ── Known hosts ───────────────────────────────────────────────────────────────
+  # TODO: move personal hosts to modules/nixos if more machines are added
+  programs.ssh.knownHosts =
+    let
+      keys = import ../../modules/ssot/keys.nix;
+    in
+    {
+      "vegeta" = {
+        hostNames = [ "vegeta" ];
+        publicKey = keys.systems.vegeta;
+      };
+    };
+
   # ── Extra ─────────────────────────────────────────────────────────────────────
   programs.hyprland.enable = true;
 
