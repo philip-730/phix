@@ -50,6 +50,10 @@ in
     extraUpFlags = [ "--ssh" ];
   };
 
+  systemd.tmpfiles.rules = [
+    "d /home/philip/.ssh 0700 philip users -"
+  ];
+
   age.secrets = {
     tailscale_auth = {
       file = ../../secrets/tailscale_auth.age;
@@ -65,6 +69,7 @@ in
   # ── home-manager ──────────────────────────────────────────────────────────────
   home-manager.users.philip = {
     imports = [ ../../users/phil-personal.nix ];
+    home.file.".ssh/id_ed25519.pub".text = builtins.elemAt keys.users.philip 0;
   };
 
   system.stateVersion = "24.11";
