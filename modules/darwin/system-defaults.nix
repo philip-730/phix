@@ -13,6 +13,11 @@ in
         default = true;
         description = "Automatically hide and show the Dock.";
       };
+      largeSize = lib.mkOption {
+        type = lib.types.int;
+        default = 36;
+        description = "Dock icon size when magnified.";
+      };
       tileSize = lib.mkOption {
         type = lib.types.int;
         default = 48;
@@ -54,6 +59,11 @@ in
         default = 15;
         description = "Initial key repeat delay (lower = shorter delay).";
       };
+      automaticPeriodSubstitution = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Whether macOS auto-converts double-space to period.";
+      };
     };
   };
 
@@ -61,6 +71,7 @@ in
     system.defaults = {
       dock = {
         autohide = cfg.dock.autohide;
+        largesize = cfg.dock.largeSize;
         tilesize = cfg.dock.tileSize;
         show-recents = cfg.dock.showRecentApps;
       };
@@ -72,6 +83,7 @@ in
       NSGlobalDomain = {
         KeyRepeat = cfg.keyboard.keyRepeatRate;
         InitialKeyRepeat = cfg.keyboard.initialKeyRepeatDelay;
+        NSAutomaticPeriodSubstitutionEnabled = cfg.keyboard.automaticPeriodSubstitution;
       };
     };
   };

@@ -2,6 +2,8 @@
 {
   # ── System identity ──────────────────────────────────────────────────────────
   networking.hostName = "darwin-work";
+  system.primaryUser = "philipamendolia";
+  ids.gids.nixbld = 30000;
 
   # ── Modules ──────────────────────────────────────────────────────────────────
   phix.nix.enable = true;
@@ -10,6 +12,7 @@
     enable = true;
     dock = {
       autohide = true;
+      largeSize = 36;
       tileSize = 48;
       showRecentApps = false;
     };
@@ -21,6 +24,7 @@
     keyboard = {
       keyRepeatRate = 2;
       initialKeyRepeatDelay = 15;
+      automaticPeriodSubstitution = false;
     };
   };
 

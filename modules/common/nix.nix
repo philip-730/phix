@@ -2,6 +2,15 @@
 
 let
   cfg = config.phix.nix;
+  gcIntervalFromFrequency =
+    if cfg.gc.frequency == "weekly" then
+      { Weekday = 0; Hour = 3; Minute = 15; }
+    else if cfg.gc.frequency == "daily" then
+      { Hour = 3; Minute = 15; }
+    else if cfg.gc.frequency == "monthly" then
+      { Day = 1; Hour = 3; Minute = 15; }
+    else
+      { Weekday = 0; Hour = 3; Minute = 15; };
 in
 {
   options.phix.nix = {
@@ -14,9 +23,9 @@ in
         description = "Enable automatic garbage collection.";
       };
       frequency = lib.mkOption {
-        type = lib.types.str;
+        type = lib.types.enum [ "daily" "weekly" "monthly" ];
         default = "weekly";
-        description = "How often to run nix gc (systemd calendar format on NixOS, launchd interval on Darwin).";
+        description = "How often to run nix gc.";
       };
       keepGenerations = lib.mkOption {
         type = lib.types.int;
@@ -49,9 +58,13 @@ in
 
       gc = lib.mkIf cfg.gc.enable {
         automatic = true;
-        dates = cfg.gc.frequency;
         options = "--delete-older-than +${toString cfg.gc.keepGenerations}";
-      };
+      } // (
+        if pkgs.stdenv.isDarwin then
+          { interval = gcIntervalFromFrequency; }
+        else
+          { dates = cfg.gc.frequency; }
+      );
     };
   };
 }
