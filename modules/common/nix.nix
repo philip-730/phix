@@ -23,9 +23,9 @@ in
         description = "Enable automatic garbage collection.";
       };
       frequency = lib.mkOption {
-        type = lib.types.enum [ "daily" "weekly" "monthly" ];
+        type = lib.types.str;
         default = "weekly";
-        description = "How often to run nix gc.";
+        description = "How often to run nix gc (systemd calendar format on NixOS, preset mapping on Darwin).";
       };
       keepGenerations = lib.mkOption {
         type = lib.types.int;
@@ -58,7 +58,7 @@ in
 
       gc = lib.mkIf cfg.gc.enable {
         automatic = true;
-        options = "--delete-older-than +${toString cfg.gc.keepGenerations}";
+        options = "--delete-older-than ${toString cfg.gc.keepGenerations}d";
       } // (
         if pkgs.stdenv.isDarwin then
           { interval = gcIntervalFromFrequency; }
